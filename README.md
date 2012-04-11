@@ -25,7 +25,7 @@ gem 'hash-tree'
 Usage
 -----
 
-**FILL THE USAGE**
+Coming soon
 
 ```ruby
 HashTree.new
