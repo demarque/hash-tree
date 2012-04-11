@@ -1,0 +1,73 @@
+---
+"books":
+  -
+    "id": 1
+    "title": "Don Quixote"
+    "author":
+      - "Miguel de Cervantes"
+    "formats":
+      -
+        "nature": "pdf"
+        "price":
+          -
+            "amount": 999
+            "currency": "cad"
+      -
+        "nature": "epub"
+        "price":
+          -
+            "amount": 1099
+            "currency": "cad"
+          -
+            "amount": 999
+            "currency": "usd"
+    "tags":
+      - "realism"
+      - "chivalry"
+      - "satire"
+      - "deception"
+    "year": 1615
+
+  -
+    "id": 2
+    "title": "Steppenwolf"
+    "author":
+      - "Hermann Hesse"
+    "formats":
+      -
+        "nature": "pdf"
+        "price":
+          -
+            "amount": 799
+            "currency": "cad"
+
+      -
+        "nature": "epub"
+        "price":
+          -
+            "amount": 799
+            "currency": "cad"
+          -
+            "amount": 759
+            "currency": "usd"
+    "tags":
+      - "conflict"
+      - "isolation"
+      - "reality"
+      - "animalistic"
+    "year": 1927
+
+  -
+    "id": 3
+    "title": "The Idiot"
+    "author":
+      - "Fyodor Dostoyevsky"
+    "formats":
+      -
+        "nature": "epub"
+        "price":
+          -
+            "amount": 1599
+            "currency": "cad"
+    "tags": ""
+    "year": 1869

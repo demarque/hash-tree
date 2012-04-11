@@ -1,0 +1,14 @@
+{
+  "book":
+    {
+      "id": 2,
+      "title": "Steppenwolf",
+      "author": ["Hermann Hesse"],
+      "formats": [
+        { "nature": "pdf", "price": [{ "amount": 799, "currency": "cad" }]},
+        { "nature": "epub", "price": [{ "amount": 799, "currency": "cad" }, { "amount": 759, "currency": "usd" }]}
+      ],
+      "tags": ["conflict", "isolation", "reality", "animalistic"],
+      "year": 1927
+    }
+}

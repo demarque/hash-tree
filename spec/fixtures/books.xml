@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+  <book>
+    <id>1</id>
+    <title>Don Quixote</title>
+    <authors>
+      <author>Miguel de Cervantes</author>
+    </authors>
+    <formats>
+      <format>
+        <nature>pdf</nature>
+        <prices>
+          <price>
+            <amount>999</amount>
+            <currency>cad</currency>
+          </price>
+        </prices>
+      </format>
+      <format>
+        <nature>epub</nature>
+        <prices>
+          <price>
+            <amount>1099</amount>
+            <currency>cad</currency>
+          </price>
+          <price>
+            <amount>999</amount>
+            <currency>usd</currency>
+          </price>
+        </prices>
+      </format>
+    </formats>
+    <tags>
+      <tag>realism</tag>
+      <tag>chivalry</tag>
+      <tag>satire</tag>
+      <tag>deception</tag>
+    </tags>
+    <year>1615</year>
+  </book>
+
+  <book>
+    <id>2</id>
+    <title>Steppenwolf</title>
+    <authors>
+      <author>Hermann Hesse</author>
+    </authors>
+    <formats>
+      <format>
+        <nature>pdf</nature>
+        <prices>
+          <price>
+            <amount>799</amount>
+            <currency>cad</currency>
+          </price>
+        </prices>
+      </format>
+      <format>
+        <nature>epub</nature>
+        <prices>
+          <price>
+            <amount>799</amount>
+            <currency>cad</currency>
+          </price>
+          <price>
+            <amount>759</amount>
+            <currency>usd</currency>
+          </price>
+        </prices>
+      </format>
+    </formats>
+    <tags>
+      <tag>conflict</tag>
+      <tag>isolation</tag>
+      <tag>reality</tag>
+      <tag>animalistic</tag>
+    </tags>
+    <year>1927</year>
+  </book>
+
+  <book>
+    <id>3</id>
+    <title>The Idiot</title>
+    <authors>
+      <author>Fyodor Dostoyevsky</author>
+    </authors>
+    <formats>
+      <format>
+        <nature>epub</nature>
+        <prices>
+          <price>
+            <amount>1599</amount>
+            <currency>cad</currency>
+          </price>
+        </prices>
+      </format>
+    </formats>
+    <tags></tags>
+    <year>1869</year>
+  </book>
+</books>
