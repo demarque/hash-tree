@@ -332,7 +332,7 @@ class HashTree
             values = []
             compare_values.each { |v| values << v[p] }
             compare_values = values
-          elsif compare_values[p] != nil
+          elsif compare_values.is_a? Hash and compare_values[p] != nil
             compare_values = compare_values[p]
           else
             compare_values = nil
