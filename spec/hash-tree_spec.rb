@@ -95,8 +95,101 @@ describe HashTree do
     end
   end
 
+  # nodes are considered nodes when no more hash can be found in the child
   describe "#each" do
-    pending 'TOTEST'
+    subject do
+      HashTree.new({ 'n1' => [
+          { 'l11' => '' },
+          { 'l12' => '', 'n11' => ['l111', 'l112'] },
+          { 'l13' => '', 'n12' => [{'l121' => '', 'l122' => ''}, {}] },
+          {              'n13' => {
+                                    'n131' => {
+                                                'n1311' => ['l311'], 'n1312' => {'l31121' => '', 'n13121' => ['l3121']}
+                                              }
+                                  }
+          }
+        ]})
+    end
+    
+    it { expect { |b| subject.each(&b) }.to yield_successive_args(
+      [{"l11"=>""}, "l11", "", "n1.l11"],
+      [{"l12"=>"", "n11"=>["l111", "l112"]}, "l12", "", "n1.l12"],
+      [{"l12"=>"", "n11"=>["l111", "l112"]}, "n11", "l111", "n1.n11"],
+      [{"l12"=>"", "n11"=>["l111", "l112"]}, "n11", "l112", "n1.n11"],
+      [{"l13"=>"", "n12"=>[{"l121"=>"", "l122"=>""}, {}]}, "l13", "", "n1.l13"],
+      [{"l121"=>"", "l122"=>""}, "l121", "", "n1.n12.l121"],
+      [{"l121"=>"", "l122"=>""}, "l122", "", "n1.n12.l122"],
+      [{"n1311"=>["l311"], "n1312"=>{"l31121"=>"", "n13121"=>["l3121"]}}, "n1311", "l311", "n1.n13.n131.n1311"],
+      [{"l31121"=>"", "n13121"=>["l3121"]}, "l31121", "", "n1.n13.n131.n1312.l31121"],
+      [{"l31121"=>"", "n13121"=>["l3121"]}, "n13121", "l3121", "n1.n13.n131.n1312.n13121"]
+    )}
+  end
+
+  describe "#each_nodes" do
+    let!(:first_a1) { { 'a11' => 'a111' } }
+    let!(:second_a1) { { 'a11' => 'a112', 'b11' => ['b111', 'b1112'] } }
+
+    let!(:third_a1_first_b11) { {'b111' => 'b31111', 'b112' => 'b31112'} }
+    let!(:third_a1_second_b11) { {'b111' => 'b31113'} }
+    let!(:third_a1) { { 'a11' => 'a113', 'b11' => [third_a1_first_b11, third_a1_second_b11] } }
+
+    let!(:fourth_a1_first_b11) { {'b111' => 'b41111', 'b112' => 'b41112'} }
+    let!(:fourth_a1) { { 'a11' => 'a114', 'b11' => [fourth_a1_first_b11, {}, ['b112'], 'b112', 5] } }
+    
+    let!(:a1) { [first_a1, second_a1, third_a1, fourth_a1] }
+    let!(:first_b1111) { { 'b1111' => 'b11111' } }
+    let!(:second_b1111) { { 'b1111' => 'b11112' } }
+    let!(:b11) { { 'b111' => [first_b1111, second_b1111] } }
+    let!(:b1) { { 'b11' =>  b11 } }
+
+    let!(:tree) { { 'a1' => a1, 'b1' => b1 } }
+
+    subject { HashTree.new(tree) }
+
+    it { expect { |b| subject.each_nodes(nil, &b) }.to_not yield_control }
+    it { expect { |b| subject.each_nodes('', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_nodes('doesnotexist', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_nodes('does.not.exist', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_nodes('a1.doesnotexist', &b) }.to_not yield_control }
+
+    # a node is not a leaf
+    it { expect { |b| subject.each_nodes('a1.a11.a111', &b) }.to_not yield_control }
+
+
+    it { expect { |b| subject.each_nodes('a1', &b) }.to yield_successive_args(
+      [{'a1' => tree}, a1]
+    )}   
+
+    it { expect { |b| subject.each_nodes('a1.a11', &b) }.to yield_successive_args(
+      [{'a1' => tree, 'a1.a11' => first_a1}, 'a111'],
+      [{'a1' => tree, 'a1.a11' => second_a1}, 'a112'],
+      [{'a1' => tree, 'a1.a11' => third_a1}, 'a113'],
+      [{'a1' => tree, 'a1.a11' => fourth_a1}, 'a114']
+    )}
+
+    it { expect { |b| subject.each_nodes('a1.b11', &b) }.to yield_successive_args(
+      [{'a1' => tree, 'a1.b11' => second_a1}, ['b111', 'b1112']],
+      [{'a1' => tree, 'a1.b11' => third_a1}, [third_a1_first_b11, third_a1_second_b11]],
+      [{'a1' => tree, 'a1.b11' => fourth_a1}, [fourth_a1_first_b11, {}, ['b112'], 'b112', 5]]
+    )}
+
+    it { expect { |b| subject.each_nodes('a1.b11.b111', &b) }.to yield_successive_args(
+      [{'a1' => tree, 'a1.b11' => third_a1, 'a1.b11.b111' => third_a1_first_b11}, 'b31111'],
+      [{'a1' => tree, 'a1.b11' => third_a1, 'a1.b11.b111' => third_a1_second_b11}, 'b31113'],
+      [{'a1' => tree, 'a1.b11' => fourth_a1, 'a1.b11.b111' => fourth_a1_first_b11}, 'b41111']
+    )}
+
+    it { expect { |b| subject.each_nodes('b1', &b) }.to yield_successive_args(
+      [{'b1' => tree}, b1]
+    )}
+
+    it { expect { |b| subject.each_nodes('b1.b11', &b) }.to yield_successive_args(
+      [{'b1' => tree, 'b1.b11' => b1}, b11]
+    )}
+
+    it { expect { |b| subject.each_nodes('b1.b11.b111', &b) }.to yield_successive_args(
+      [{'b1' => tree, 'b1.b11' => b1, 'b1.b11.b111' => b11}, [first_b1111, second_b1111]]
+    )}
   end
 
   describe "#empty?" do

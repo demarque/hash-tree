@@ -99,6 +99,38 @@ class HashTree
     end
   end
 
+  # Takes a path (keys separated by dots) and yield an hash of the parents of all level (ascendants) up to the root, along with the value of the path.
+  def each_nodes(path, options={}, &block)
+    options = { :hash => @hash, :key_path => [], :parents => {} }.merge(options)
+    return unless path && !path.empty?
+
+    all_keys = path.split('.')
+    keys = all_keys[options[:key_path].size..-1]
+    key = keys.shift
+    key_path = [options[:key_path], key].flatten
+    key_path_string = key_path.join('.')
+    value = options[:hash][key]
+
+    if value
+      parents = options[:parents].merge(Hash[key_path_string, options[:hash]])
+
+      # Go no further?
+      if (key_path == all_keys)
+        yield parents, value
+      else
+        if value.kind_of? Array
+          value.each do |item|
+            if item.kind_of? Hash
+              each_nodes(path, {:hash => item, :key_path => key_path, :parents => parents}, &block)
+            end
+          end
+        elsif value.kind_of? Hash
+          each_nodes(path, {:hash => value, :key_path => key_path, :parents => parents}, &block)
+        end
+      end
+    end
+  end
+
   def empty?
     @hash.empty?
   end
