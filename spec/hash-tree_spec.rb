@@ -125,7 +125,7 @@ describe HashTree do
     )}
   end
 
-  describe "#each_nodes" do
+  describe "#each_node" do
     let!(:first_a1) { { 'a11' => 'a111' } }
     let!(:second_a1) { { 'a11' => 'a112', 'b11' => ['b111', 'b1112'] } }
 
@@ -146,48 +146,48 @@ describe HashTree do
 
     subject { HashTree.new(tree) }
 
-    it { expect { |b| subject.each_nodes(nil, &b) }.to_not yield_control }
-    it { expect { |b| subject.each_nodes('', &b) }.to_not yield_control }
-    it { expect { |b| subject.each_nodes('doesnotexist', &b) }.to_not yield_control }
-    it { expect { |b| subject.each_nodes('does.not.exist', &b) }.to_not yield_control }
-    it { expect { |b| subject.each_nodes('a1.doesnotexist', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_node(nil, &b) }.to_not yield_control }
+    it { expect { |b| subject.each_node('', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_node('doesnotexist', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_node('does.not.exist', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_node('a1.doesnotexist', &b) }.to_not yield_control }
 
     # a node is not a leaf
-    it { expect { |b| subject.each_nodes('a1.a11.a111', &b) }.to_not yield_control }
+    it { expect { |b| subject.each_node('a1.a11.a111', &b) }.to_not yield_control }
 
 
-    it { expect { |b| subject.each_nodes('a1', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('a1', &b) }.to yield_successive_args(
       [{'a1' => tree}, a1]
     )}   
 
-    it { expect { |b| subject.each_nodes('a1.a11', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('a1.a11', &b) }.to yield_successive_args(
       [{'a1' => tree, 'a1.a11' => first_a1}, 'a111'],
       [{'a1' => tree, 'a1.a11' => second_a1}, 'a112'],
       [{'a1' => tree, 'a1.a11' => third_a1}, 'a113'],
       [{'a1' => tree, 'a1.a11' => fourth_a1}, 'a114']
     )}
 
-    it { expect { |b| subject.each_nodes('a1.b11', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('a1.b11', &b) }.to yield_successive_args(
       [{'a1' => tree, 'a1.b11' => second_a1}, ['b111', 'b1112']],
       [{'a1' => tree, 'a1.b11' => third_a1}, [third_a1_first_b11, third_a1_second_b11]],
       [{'a1' => tree, 'a1.b11' => fourth_a1}, [fourth_a1_first_b11, {}, ['b112'], 'b112', 5]]
     )}
 
-    it { expect { |b| subject.each_nodes('a1.b11.b111', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('a1.b11.b111', &b) }.to yield_successive_args(
       [{'a1' => tree, 'a1.b11' => third_a1, 'a1.b11.b111' => third_a1_first_b11}, 'b31111'],
       [{'a1' => tree, 'a1.b11' => third_a1, 'a1.b11.b111' => third_a1_second_b11}, 'b31113'],
       [{'a1' => tree, 'a1.b11' => fourth_a1, 'a1.b11.b111' => fourth_a1_first_b11}, 'b41111']
     )}
 
-    it { expect { |b| subject.each_nodes('b1', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('b1', &b) }.to yield_successive_args(
       [{'b1' => tree}, b1]
     )}
 
-    it { expect { |b| subject.each_nodes('b1.b11', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('b1.b11', &b) }.to yield_successive_args(
       [{'b1' => tree, 'b1.b11' => b1}, b11]
     )}
 
-    it { expect { |b| subject.each_nodes('b1.b11.b111', &b) }.to yield_successive_args(
+    it { expect { |b| subject.each_node('b1.b11.b111', &b) }.to yield_successive_args(
       [{'b1' => tree, 'b1.b11' => b1, 'b1.b11.b111' => b11}, [first_b1111, second_b1111]]
     )}
   end
