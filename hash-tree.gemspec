@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency("json", [">= 1.5.0"])
   s.add_dependency("ya2yaml", [">= 0.30"])
-  s.add_dependency("nori", ["~> 1.1.0"])
+  s.add_dependency("nori", ["~> 2.0"])
+  s.add_dependency("nokogiri", ["~> 1.6.1"])
 
   s.add_development_dependency('rake', ['>= 0.8.7'])
   s.add_development_dependency('rspec', ['>= 2.0'])

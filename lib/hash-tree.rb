@@ -32,8 +32,9 @@ class HashTree
 
   def self.from_xml(xml_data)
     return nil if xml_data.to_s.empty?
-
-    tree = self.new(Nori.parse(xml_data))
+    
+    parser = Nori.new
+    tree = self.new(parser.parse(xml_data))
     tree.replace_values!(nil, '')
 
     return tree
