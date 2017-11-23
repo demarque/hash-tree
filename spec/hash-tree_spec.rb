@@ -9,21 +9,22 @@ describe HashTree do
 
       subject { hashtree }
 
-      it { should_not be_empty }
-      the("hashtree.get('books').length") { should eql 3 }
+      it { is_expected.not_to be_empty }
+      it { expect(hashtree.get('books').length).to eql 3 }
     end
 
     context "when using an empty fixture" do
       subject { HashTree.from_json('') }
 
-      it { should be_nil }
+      it { is_expected.to be_nil }
     end
   end
 
   describe "::from_json_path" do
     context "when using the books.json fixture" do
       subject { HashTree.from_json_path('spec/fixtures/books.json') }
-      it { should_not be_empty }
+
+      it { is_expected.not_to be_empty }
     end
   end
 
@@ -33,21 +34,22 @@ describe HashTree do
 
       subject { hashtree }
 
-      it { should_not be_empty }
-      the("hashtree.get('books.book').length") { should eql 3 }
+      it { is_expected.not_to be_empty }
+      it { expect(hashtree.get('books.book').length).to eql 3 }
     end
 
     context "when using an empty fixture" do
       subject { HashTree.from_xml('') }
 
-      it { should be_nil }
+      it { is_expected.to be_nil }
     end
   end
 
   describe "::from_xml_path" do
     context "when using the books.xml fixture" do
       subject { HashTree.from_xml_path('spec/fixtures/books.xml') }
-      it { should_not be_empty }
+
+      it { is_expected.not_to be_empty }
     end
   end
 
@@ -57,23 +59,19 @@ describe HashTree do
 
       subject { hashtree }
 
-      it { should_not be_empty }
-      the("hashtree.get('books').length") { should eql 3 }
+      it { is_expected.not_to be_empty }
+      it { expect(hashtree.get('books').length).to eql 3}
     end
   end
 
   describe "#checksum" do
     context "with an empty hash" do
-      specify { HashTree.new.checksum.should eql '99914b932bd37a50b983c5e7c90ae93b' }
+      it { expect(HashTree.new.checksum).to eql '99914b932bd37a50b983c5e7c90ae93b' }
     end
 
     with_books_fixture do
-      specify { hashtree.checksum.should eql 'c15fddfa0bea3610663d019b8b5b4a4d' }
+      it { expect(hashtree.checksum).to eql 'c15fddfa0bea3610663d019b8b5b4a4d' }
     end
-  end
-
-  describe "#children" do
-    pending 'TOTEST'
   end
 
   describe "#clone_tree" do
@@ -81,7 +79,7 @@ describe HashTree do
       context "and cloning it" do
         subject { hashtree.clone_tree }
 
-        its(:object_id) { should_not eql hashtree.object_id }
+        it { expect(subject.object_id).not_to eql hashtree.object_id }
       end
     end
   end
@@ -90,8 +88,8 @@ describe HashTree do
     fixture :hashtree, HashTree.new({ 'books' => [ { 'title' => 'Don Quixote' }, { 'title' => nil }, { 'title' => 'Steppenwolf', 'formats' => [nil, 'pdf', 'epub'] } ]}) do
       before { hashtree.compact! }
 
-      the("hashtree.get('books.title')") { should eql ['Don Quixote', 'Steppenwolf'] }
-      the("hashtree.get('books.formats')") { should eql ['pdf', 'epub'] }
+      it { expect(hashtree.get('books.title')).to eql ['Don Quixote', 'Steppenwolf'] }
+      it { expect(hashtree.get('books.formats')).to eql ['pdf', 'epub'] }
     end
   end
 
@@ -110,7 +108,7 @@ describe HashTree do
           }
         ]})
     end
-    
+
     it { expect { |b| subject.each(&b) }.to yield_successive_args(
       [{"l11"=>""}, "l11", "", "n1.l11"],
       [{"l12"=>"", "n11"=>["l111", "l112"]}, "l12", "", "n1.l12"],
@@ -135,7 +133,7 @@ describe HashTree do
 
     let!(:fourth_a1_first_b11) { {'b111' => 'b41111', 'b112' => 'b41112'} }
     let!(:fourth_a1) { { 'a11' => 'a114', 'b11' => [fourth_a1_first_b11, {}, ['b112'], 'b112', 5] } }
-    
+
     let!(:a1) { [first_a1, second_a1, third_a1, fourth_a1] }
     let!(:first_b1111) { { 'b1111' => 'b11111' } }
     let!(:second_b1111) { { 'b1111' => 'b11112' } }
@@ -158,7 +156,7 @@ describe HashTree do
 
     it { expect { |b| subject.each_node('a1', &b) }.to yield_successive_args(
       [{'a1' => tree}, a1]
-    )}   
+    )}
 
     it { expect { |b| subject.each_node('a1.a11', &b) }.to yield_successive_args(
       [{'a1' => tree, 'a1.a11' => first_a1}, 'a111'],
@@ -194,59 +192,39 @@ describe HashTree do
 
   describe "#empty?" do
     fixture :ht, HashTree.new do
-      it { should be_empty }
+      it { is_expected.to be_empty }
     end
 
     fixture :ht, HashTree.new({ 'book' => 'Steppenwolf' }) do
-      it { should_not be_empty }
+      it { is_expected.not_to be_empty }
     end
   end
 
   describe "#exists?" do
     fixture :hashtree, HashTree.new({ 'books' => [ { 'title' => 'Don Quixote' }, { 'formats' => [{ 'price' => 999 }] } ]}) do
-      the("hashtree.exists?('books.title')") { should be_true }
-      the("hashtree.exists?('books.formats.price')") { should be_true }
-      the("hashtree.exists?('books.unknown')") { should be_false }
+      it { expect(hashtree.exists?('books.title')).to be_truthy }
+      it { expect(hashtree.exists?('books.formats.price')).to be_truthy }
+      it { expect(hashtree.exists?('books.unknown')).to be_falsey }
     end
   end
 
   describe "#get" do
     fixture :books, HashTree.new({ 'books' => [ { 'title' => 'Don Quixote' }, { 'formats' => [{ 'nature' => 'pdf' }, {'nature' => 'epub' }] } ]}) do
-      the("books.get('books.title')") { should eql "Don Quixote" }
-      the("books.get('books.title', :force => Array)") { should eql ["Don Quixote"] }
-      the("books.get('books.formats')") { should eql [{ 'nature' => 'pdf' }, {'nature' => 'epub' }] }
-      the("books.get('books.formats.nature')") { should eql ['pdf', 'epub'] }
-      the("books.get('books.name')") { should eql "" }
-      the("books.get('books.name', :default => nil)") { should be_nil }
+      it { expect(books.get('books.title')).to eql "Don Quixote" }
+      it { expect(books.get('books.title', :force => Array)).to eql ["Don Quixote"] }
+      it { expect(books.get('books.formats')).to eql [{ 'nature' => 'pdf' }, {'nature' => 'epub' }] }
+      it { expect(books.get('books.formats.nature')).to eql ['pdf', 'epub'] }
+      it { expect(books.get('books.name')).to eql "" }
+      it { expect(books.get('books.name', :default => nil)).to be_nil }
     end
-  end
-
-  describe "#keys_to_s!" do
-    pending 'TOTEST'
   end
 
   describe "#id" do
     context "with an hash tree having the attribute id with the value 123" do
       subject { HashTree.new(:id => 123, :name => 'test') }
 
-      its(:id) { should eql 123 }
+      it { expect(subject.id).to eql 123 }
     end
-  end
-
-  describe "#insert" do
-    pending 'TOTEST'
-  end
-
-  describe "#inspect" do
-    pending 'TOTEST'
-  end
-
-  describe "#merge" do
-    pending 'TOTEST'
-  end
-
-  describe "#remove" do
-    pending 'TOTEST'
   end
 
   describe "#rename_key!" do
@@ -254,37 +232,35 @@ describe HashTree do
       context "and renaming the key books.title for name" do
         before { hashtree.rename_key! 'books.title', 'name' }
 
-        the("hashtree.exists?('books.title')") { should be_false }
-        the("hashtree.exists?('books.name')") { should be_true }
+        it { expect(hashtree.exists?('books.title')).to be_falsey }
+        it { expect(hashtree.exists?('books.name')).to be_truthy }
       end
 
       context "and renaming the key books.formats.prices.currency for specie" do
         before { hashtree.rename_key! 'books.formats.prices.currency', 'specie' }
 
-        the("hashtree.exists?('books.formats.prices.currency')") { should be_false }
-        the("hashtree.exists?('books.formats.prices.specie')") { should be_true }
+        it { expect(hashtree.exists?('books.formats.prices.currency')).to be_falsey }
+        it { expect(hashtree.exists?('books.formats.prices.specie')).to be_truthy }
       end
     end
   end
 
   describe "#replace_values!" do
     with_books_fixture do
-      the("hashtree.get('books.formats.nature')") { should include 'pdf' }
+      it { expect(hashtree.get('books.formats.nature')).to include 'pdf' }
 
       context "and replacing value pdf for paper" do
         before { hashtree.replace_values!('pdf', 'paper') }
-        the("hashtree.get('books.formats.nature')") { should_not include 'pdf' }
+
+        it { expect(hashtree.get('books.formats.nature')).not_to include 'pdf' }
       end
 
       context "and replacing value unknown for paper" do
         before { hashtree.replace_values!('unknown', 'paper') }
-        the("hashtree.get('books.formats.nature')") { should include 'pdf' }
+
+        it { expect(hashtree.get('books.formats.nature')).to include 'pdf' }
       end
     end
-  end
-
-  describe "#set" do
-    pending 'TOTEST'
   end
 
   describe "#slash" do
@@ -292,12 +268,12 @@ describe HashTree do
       context "and slashing book" do
         subject { hashtree.slash 'book' }
 
-        its(:title) { should eql 'Steppenwolf' }
-        the("hashtree.book['title']") { should eql 'Steppenwolf' }
+        it { expect(subject.title).to eql 'Steppenwolf' }
+        it { expect(hashtree.book['title']).to eql 'Steppenwolf' }
       end
 
       context "and not slashing book" do
-        its(:title) { should be_nil }
+        it { expect(subject.title).to be_nil }
       end
     end
   end
@@ -307,8 +283,8 @@ describe HashTree do
       context "and slashing book" do
         before { hashtree.slash! 'book' }
 
-        its(:title) { should eql 'Steppenwolf' }
-        the("hashtree.book") { should be_nil }
+        it { expect(subject.title).to eql 'Steppenwolf' }
+        it { expect(hashtree.book).to be_nil }
       end
     end
   end
@@ -318,15 +294,11 @@ describe HashTree do
       context "and converting it to json" do
         subject { hashtree.to_json }
 
-        it { should_not be_empty }
-        it { should include '{"books":[{' }
-        it { should include '"tags":["conflict","isolation","reality","animalistic"]' }
-        it { should include '"author":["Fyodor Dostoyevsky"]' }
+        it { is_expected.not_to be_empty }
+        it { is_expected.to include '{"books":[{' }
+        it { is_expected.to include '"tags":["conflict","isolation","reality","animalistic"]' }
+        it { is_expected.to include '"author":["Fyodor Dostoyevsky"]' }
       end
     end
-  end
-
-  describe "#to_yaml" do
-    pending 'TOTEST'
   end
 end

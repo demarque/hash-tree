@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "hash-tree"
-  s.version     = "0.0.4"
+  s.version     = "0.0.5"
   s.authors     = ["Sebastien Rosa"]
   s.email       = ["sebastien@demarque.com"]
   s.extra_rdoc_files = ["LICENSE", "README.md"]
@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency("json", [">= 1.5.0"])
   s.add_dependency("ya2yaml", [">= 0.30"])
-  s.add_dependency("nori", ["~> 2.0"])
-  s.add_dependency("nokogiri", ["~> 1.6.1"])
+  s.add_dependency("nori", ["~> 2.6"])
+  s.add_dependency("nokogiri", [">= 1.6.1"])
 
   s.add_development_dependency('rake', ['>= 0.8.7'])
   s.add_development_dependency('rspec', ['>= 2.0'])
